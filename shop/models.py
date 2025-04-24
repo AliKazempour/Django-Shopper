@@ -20,7 +20,7 @@ class Product(models.Model):
     description = models.TextField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
     in_stock = models.BooleanField(default=True)
-    manufacture_date = models.DateField()
+    manufacture_date = models.DateField(auto_now_add=True)
 
     def __str__(self):
         return self.name
