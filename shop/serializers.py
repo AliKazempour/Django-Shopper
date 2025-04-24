@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.password_validation import validate_password
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from phonenumber_field.serializerfields import PhoneNumberField
-from .models import UserProfile
+from .models import UserProfile, Product, Order, OrderItem
 
 
 class RegistrationSerializer(serializers.ModelSerializer):
@@ -55,3 +55,17 @@ class LoginSerializer(TokenObtainPairSerializer):
         data = super().validate(attrs)
         data['user_id'] = self.user.id
         return data
+
+
+class ProductCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Product
+        fields = ('name', 'description', 'price',
+                  'in_stock', 'manufacture_date')
+        extra_kwargs = {
+            'name': {'required': True},
+            'description': {'required': True},
+            'price': {'required': True},
+            'in_stock': {'required': True}
+
+        }

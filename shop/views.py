@@ -2,7 +2,7 @@ from django.shortcuts import render
 from rest_framework import generics, permissions
 from rest_framework.response import Response
 from rest_framework import status
-from .serializers import RegistrationSerializer, LoginSerializer
+from .serializers import RegistrationSerializer, LoginSerializer, ProductCreateSerializer
 
 
 class RegistrationAPIView(generics.GenericAPIView):
@@ -26,3 +26,8 @@ class LoginAPIView(generics.GenericAPIView):
         if serializer.is_valid():
             return Response(serializer.validated_data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_401_UNAUTHORIZED)
+
+
+class ProductCreateView(generics.CreateAPIView):
+    serializer_class = ProductCreateSerializer
+    permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
