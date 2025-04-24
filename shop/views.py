@@ -2,8 +2,9 @@ from django.shortcuts import render
 from rest_framework import generics, permissions
 from rest_framework.response import Response
 from rest_framework import status
-from .serializers import RegistrationSerializer, LoginSerializer, ProductCreateSerializer, ProductListSerializer
+from .serializers import RegistrationSerializer, LoginSerializer, ProductCreateSerializer, ProductListSerializer, ProductDetailSerializer
 from .models import UserProfile, Product, Order, OrderItem
+from .permissions import AdminOrReadOnly
 
 
 class RegistrationAPIView(generics.GenericAPIView):
@@ -40,3 +41,12 @@ class ProductListView(generics.ListAPIView):
 
     def get_queryset(self):
         return Product.objects.filter(in_stock=True)
+
+
+class ProductDetailView(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = ProductDetailSerializer
+    permission_classes = [AdminOrReadOnly]
+
+    def get_object(self):
+        product_id = self.kwargs.get('pk', '')
+        return Product.objects.get(id=product_id)

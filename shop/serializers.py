@@ -74,4 +74,9 @@ class ProductCreateSerializer(serializers.ModelSerializer):
 class ProductListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
-        fields = ('id', 'name', 'price', 'in_stock', 'manufacture_date')
+        fields = '__all__'
+
+class ProductDetailSerializer(serializers.ModelSerializer):  # Optional
+    class Meta:
+        model = Product
+        fields = '__all__'
