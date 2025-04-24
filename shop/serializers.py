@@ -69,3 +69,9 @@ class ProductCreateSerializer(serializers.ModelSerializer):
             'in_stock': {'required': True}
 
         }
+
+
+class ProductListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Product
+        fields = ('id', 'name', 'price', 'in_stock', 'manufacture_date')

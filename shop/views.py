@@ -2,7 +2,8 @@ from django.shortcuts import render
 from rest_framework import generics, permissions
 from rest_framework.response import Response
 from rest_framework import status
-from .serializers import RegistrationSerializer, LoginSerializer, ProductCreateSerializer
+from .serializers import RegistrationSerializer, LoginSerializer, ProductCreateSerializer, ProductListSerializer
+from .models import UserProfile, Product, Order, OrderItem
 
 
 class RegistrationAPIView(generics.GenericAPIView):
@@ -31,3 +32,11 @@ class LoginAPIView(generics.GenericAPIView):
 class ProductCreateView(generics.CreateAPIView):
     serializer_class = ProductCreateSerializer
     permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
+
+
+class ProductListView(generics.ListAPIView):
+    serializer_class = ProductListSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return Product.objects.filter(in_stock=True)
