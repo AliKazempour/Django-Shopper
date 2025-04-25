@@ -2,7 +2,8 @@ from django.shortcuts import render
 from rest_framework import generics, permissions
 from rest_framework.response import Response
 from rest_framework import status
-from .serializers import RegistrationSerializer, LoginSerializer, ProductCreateSerializer, ProductListSerializer, ProductDetailSerializer
+from .serializers import (RegistrationSerializer, LoginSerializer, ProductCreateSerializer, ProductListSerializer, ProductDetailSerializer, OrderCreateSerializer,
+                          OrderSerializer,)
 from .models import UserProfile, Product, Order, OrderItem
 from .permissions import AdminOrReadOnly
 
@@ -50,3 +51,23 @@ class ProductDetailView(generics.RetrieveUpdateDestroyAPIView):
     def get_object(self):
         product_id = self.kwargs.get('pk', '')
         return Product.objects.get(id=product_id)
+
+
+class OrderCreateView(generics.CreateAPIView):
+    serializer_class = OrderCreateSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        order = serializer.save()
+        order_serializer = OrderSerializer(order)
+        return Response(order_serializer.data, status=status.HTTP_201_CREATED)
+
+
+class OrderListView(generics.ListAPIView):
+    serializer_class = OrderSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return Order.objects.filter(user=self.request.user).order_by('-order_time')
